@@ -4929,7 +4929,7 @@ describe('init verbs emit the ROADMAP display name, not the directory slug, once
     cleanup(tmpDir);
   });
 
-  for (const verb of ['execute-phase', 'plan-phase', 'verify-work', 'code-review', 'discuss-phase-assumptions']) {
+  for (const verb of ['execute-phase', 'plan-phase', 'verify-work', 'code-review', 'discuss-phase-assumptions', 'phase-op']) {
     test(`init ${verb}`, () => {
       const result = runGsdTools(`init ${verb} 37 --raw`, tmpDir);
       assert.ok(result.success, `init ${verb} failed: ${result.error}`);
