@@ -2258,8 +2258,11 @@ function cmdInitPhaseOp(cwd: string, phase: string, raw: boolean): void {
     return;
   }
 
+  // #4854: resolved once, up front — the ordinary (on-disk, not archived)
+  // branch needs it too, for phase_name via resolvePhaseDisplayName.
+  const roadmapPhase = guardedGetRoadmapPhase(cwd, phase, config.project_code);
+
   if (phaseInfo?.['archived']) {
-    const roadmapPhase = guardedGetRoadmapPhase(cwd, phase, config.project_code);
     if (roadmapPhase?.['found']) {
       const phaseName = roadmapPhase['phase_name'] as string | null;
       phaseInfo = {
@@ -2283,7 +2286,6 @@ function cmdInitPhaseOp(cwd: string, phase: string, raw: boolean): void {
   }
 
   if (!phaseInfo) {
-    const roadmapPhase = guardedGetRoadmapPhase(cwd, phase, config.project_code);
     if (roadmapPhase?.['found']) {
       const phaseName = roadmapPhase['phase_name'] as string | null;
       phaseInfo = {
@@ -2308,7 +2310,8 @@ function cmdInitPhaseOp(cwd: string, phase: string, raw: boolean): void {
 
   const phaseDir = (phaseInfo?.['directory'] as string | undefined) || null;
   const phaseNumber = (phaseInfo?.['phase_number'] as string | undefined) || null;
-  const phaseName = (phaseInfo?.['phase_name'] as string | undefined) || null;
+  // #3171/#4854: display name over directory slug — see resolvePhaseDisplayName.
+  const phaseName = resolvePhaseDisplayName(phaseInfo, roadmapPhase);
   const rawProjectCode = (config.project_code as string) || '';
   let expectedPhaseDir: string | null = null;
   if (!phaseDir && phaseNumber && phaseName) {
